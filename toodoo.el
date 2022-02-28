@@ -3,17 +3,13 @@
 ;===============================================================================
 ;;; Core functions
 
-(defun toodoo--todo-set-state-todo ()
+(defun toodoo--todo-set-state-started ()
   (interactive)
-  (org-todo "TODO"))
+  (org-todo "STARTED"))
 
 (defun toodoo--todo-set-state-blocked ()
   (interactive)
   (org-todo "BLOCKED"))
-
-(defun toodoo--todo-set-state-ongoing ()
-  (interactive)
-  (org-todo "ONGOING"))
 
 (defun toodoo--todo-set-state-done ()
   (interactive)
@@ -76,9 +72,8 @@
 (define-transient-command toodoo-transient-state ()
   "Toodoo State Transient"
   ["State management"
-   ("t" "Todo" toodoo--todo-set-state-todo)
+   ("s" "Started" toodoo--todo-set-state-started)
    ("b" "Blocked" toodoo--todo-set-state-blocked)
-   ("o" "Ongoing" toodoo--todo-set-state-ongoing)
    ("d" "Done" toodoo--todo-set-state-done)
    ("c" "Clear" toodoo--todo-set-state-clear)
    ])
@@ -143,7 +138,9 @@
 
 (defun toodoo--create-list ()
   (with-temp-file toodoo-main-file
-    (insert "#+TODO: TODO BLOCKED ONGOING DONE\n")
+    ; setup the TODO color schemes using local variable
+    (insert "# -*- org-todo-keyword-faces: ((\"BLOCKED\" . \"red\") (\"STARTED\" . (:foreground \"orange\" :underline t)) (\"DONE\" . \"darkgreen\")); -*-\n")
+    (insert "#+TODO: BLOCKED STARTED DONE\n")
     (insert "* Today\n")
     (insert "* This Week\n")
     (insert "* Later\n")))
