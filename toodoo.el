@@ -42,8 +42,36 @@
   (interactive)
   (kill-whole-line))
 
+(defun toodoo--todo-move-today ()
+  "Move a Todo to Today's context."
+  (interactive)
+  (org-refile nil nil (list "Today" buffer-file-name nil (org-find-exact-headline-in-buffer "Today"))))
+
+(defun toodoo--todo-move-week ()
+  "Move a Todo to this week's context."
+  (interactive)
+  (org-refile nil nil (list "This Week" buffer-file-name nil (org-find-exact-headline-in-buffer "This Week"))))
+
+(defun toodoo--todo-move-later ()
+  "Move a Todo to later's context."
+  (interactive)
+  (org-refile nil nil (list "Later" buffer-file-name nil (org-find-exact-headline-in-buffer "Later"))))
+
+(defun toodoo--todo-move-menu ()
+  "Move a Todo to context using Menu."
+  (interactive)
+  (org-refile))
+
 ;===============================================================================
 ;;; Operating Transient Menus
+
+(define-transient-command toodoo-transient-move ()
+  "Toodoo Move Transient"
+  ["Move to Schedule"
+   ("t" "Today" toodoo--todo-move-today)
+   ("w" "this Week" toodoo--todo-move-week)
+   ("l" "Later" toodoo--todo-move-later)
+   ("m" "Chose from Menu" toodoo--todo-move-menu)])
 
 (define-transient-command toodoo-transient-state ()
   "Toodoo State Transient"
@@ -65,8 +93,9 @@
 (define-transient-command toodoo-transient-main ()
   "Toodoo Main Transient"
   ["Actions"
-   ("t" "Add/Edit/Delete Todos" toodoo-transient-todos)
-   ("s" "State of Todos" toodoo-transient-state)])
+   ("t" "Manage (Add/Edit/Delete) todos" toodoo-transient-todos)
+   ("s" "State of todos" toodoo-transient-state)
+   ("m" "Move todos" toodoo-transient-move)])
 
 ;===============================================================================
 ;;; Toodoo Keymap setup
@@ -77,6 +106,7 @@
   (define-key toodoo-mode-keymap (kbd "h") 'toodoo-transient-main)
   (define-key toodoo-mode-keymap (kbd "s") 'toodoo-transient-state)
   (define-key toodoo-mode-keymap (kbd "t") 'toodoo-transient-todos)
+  (define-key toodoo-mode-keymap (kbd "m") 'toodoo-transient-move)
 )
 
 ; This is needed to ensure that these keys take precedence over all other minor mode keybindings
@@ -85,6 +115,7 @@
 
 ; This is needed to make evil respect our keymap
 ; we need our keys to override evil's
+; obtained from: https://github.com/emacs-evil/evil/issues/511#issuecomment-273754917
 (evil-make-overriding-map toodoo-mode-keymap 'normal)
 (add-hook 'toodoo-mode-hook #'evil-normalize-keymaps)
 
@@ -115,4 +146,4 @@
     (insert "#+TODO: TODO BLOCKED ONGOING DONE\n")
     (insert "* Today\n")
     (insert "* This Week\n")
-    (insert "* Everything\n")))
+    (insert "* Later\n")))
