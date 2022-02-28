@@ -65,8 +65,43 @@
   (interactive)
   (org-refile))
 
+(defun toodoo--view-section (section)
+  "View a single section by Name."
+  (interactive)
+  (widen)
+  (goto-char (point-min))
+  (re-search-forward (concat "^* " section))
+  (org-narrow-to-subtree)
+  (outline-show-children))
+
+(defun toodoo--view-today ()
+  "View single section: Today"
+  (interactive)
+  (toodoo--view-section "Today"))
+
+(defun toodoo--view-week ()
+  "View single section: this Week"
+  (interactive)
+  (toodoo--view-section "This Week"))
+
+(defun toodoo--view-later ()
+  "View single section: Later"
+  (interactive)
+  (toodoo--view-section "Later"))
+
 ;===============================================================================
 ;;; Operating Transient Menus
+
+(define-transient-command toodoo-transient-views ()
+  "Toodoo Views Transient"
+  ["Section Views"
+   ("t" "Today" toodoo--view-today)
+   ("w" "this Week" toodoo--view-week)
+   ("l" "Later" toodoo--view-later)]
+  ["Combined"
+   ()]
+  ["All"
+   ("a" "All" widen)])
 
 (define-transient-command toodoo-transient-move ()
   "Toodoo Move Transient"
@@ -111,6 +146,7 @@
   (define-key toodoo-mode-keymap (kbd "s") 'toodoo-transient-state)
   (define-key toodoo-mode-keymap (kbd "t") 'toodoo-transient-todos)
   (define-key toodoo-mode-keymap (kbd "m") 'toodoo-transient-move)
+  (define-key toodoo-mode-keymap (kbd "v") 'toodoo-transient-views)
 )
 
 ; This is needed to ensure that these keys take precedence over all other minor mode keybindings
