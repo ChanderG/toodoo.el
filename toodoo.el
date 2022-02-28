@@ -94,14 +94,14 @@
 
 (define-transient-command toodoo-transient-views ()
   "Toodoo Views Transient"
-  ["Section Views"
-   ("t" "Today" toodoo--view-today)
-   ("w" "this Week" toodoo--view-week)
-   ("l" "Later" toodoo--view-later)]
-  ["Combined"
-   ()]
-  ["All"
-   ("a" "All" widen)])
+  [["Section"
+    ("t" "Today" toodoo--view-today)
+    ("w" "this Week" toodoo--view-week)
+    ("l" "Later" toodoo--view-later)]
+   ["Combined"
+    ()]
+   ["All"
+    ("a" "All" widen)]])
 
 (define-transient-command toodoo-transient-move ()
   "Toodoo Move Transient"
@@ -122,12 +122,12 @@
 
 (define-transient-command toodoo-transient-todos ()
   "Toodoo Add/Edit/Delete Transient"
-  ["Basic"
+  [["Basic"
    ("a" "Add" toodoo--manage-add)
    ("e" "Edit" toodoo--manage-edit)
    ("k" "Kill" toodoo--manage-kill)]
   ["Advanced"
-   ("t" "edit Title alone" toodoo--manage-edit-title)])
+   ("t" "edit Title alone" toodoo--manage-edit-title)]])
 
 (define-transient-command toodoo-transient-main ()
   "Toodoo Main Transient"
