@@ -179,13 +179,16 @@
   (if (not (file-exists-p toodoo-main-file))
     (toodoo--create-list))
   (find-file toodoo-main-file)
-  (toodoo-mode 1))
+  (toodoo-mode 1)
+  (toodoo--view-today))
 
 (defun toodoo--create-list ()
   (with-temp-file toodoo-main-file
     ; setup the TODO color schemes using local variable
     (insert "# -*- org-todo-keyword-faces: ((\"BLOCKED\" . \"red\") (\"STARTED\" . (:foreground \"orange\" :underline t)) (\"DONE\" . \"darkgreen\")); -*-\n")
     (insert "#+TODO: BLOCKED STARTED DONE\n")
+    ; to start with all headings closed
+    (insert "#+STARTUP: overview\n")
     (insert "* Today\n")
     (insert "* This Week\n")
     (insert "* Later\n")))
