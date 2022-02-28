@@ -35,6 +35,11 @@
   (toodoo-mode -1)
   (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window))
 
+(defun toodoo--manage-edit-title ()
+  "Edit a Todo"
+  (interactive)
+  (org-edit-headline (read-string "Title: " (org-get-heading 1 1 1 1))))
+
 (defun toodoo--manage-kill ()
   "Kill a todo."
   (interactive)
@@ -82,10 +87,12 @@
 
 (define-transient-command toodoo-transient-todos ()
   "Toodoo Add/Edit/Delete Transient"
-  ["Actions"
+  ["Basic"
    ("a" "Add" toodoo--manage-add)
    ("e" "Edit" toodoo--manage-edit)
-   ("k" "Kill" toodoo--manage-kill)])
+   ("k" "Kill" toodoo--manage-kill)]
+  ["Advanced"
+   ("t" "edit Title alone" toodoo--manage-edit-title)])
 
 (define-transient-command toodoo-transient-main ()
   "Toodoo Main Transient"
