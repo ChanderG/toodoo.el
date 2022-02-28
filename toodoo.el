@@ -23,7 +23,9 @@
   "Create a new Todo"
   (interactive "sTitle: ")
   (org-insert-heading-after-current)
-  (insert title))
+  (insert title)
+  (if (= 1 (org-current-level))
+    (org-demote)))
 
 (defun toodoo--manage-edit ()
   "Edit a Todo"
