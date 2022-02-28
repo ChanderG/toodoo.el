@@ -89,8 +89,24 @@
   (interactive)
   (toodoo--view-section "Later"))
 
+(defun toodoo--todo-set-prio-high ()
+  "Set task to high priority"
+  (interactive)
+  (org-priority (org-priority-to-value "A")))
+
+(defun toodoo--todo-set-prio-low ()
+  "Set task to low priority"
+  (interactive)
+  (org-priority (org-priority-to-value " ")))
+
 ;===============================================================================
 ;;; Operating Transient Menus
+
+(define-transient-command toodoo-transient-priority ()
+  "Toodoo Priority Transient"
+  ["Manage Priority"
+   ("p" "High priority" toodoo--todo-set-prio-high)
+   ("r" "Remove priority" toodoo--todo-set-prio-low)])
 
 (define-transient-command toodoo-transient-views ()
   "Toodoo Views Transient"
@@ -131,10 +147,13 @@
 
 (define-transient-command toodoo-transient-main ()
   "Toodoo Main Transient"
-  ["Actions"
+  [["List"
    ("t" "Manage (Add/Edit/Delete) todos" toodoo-transient-todos)
+   ("m" "Move todos" toodoo-transient-move)
+   ("v" "View" toodoo-transient-views)]
+   ["Entry"
    ("s" "State of todos" toodoo-transient-state)
-   ("m" "Move todos" toodoo-transient-move)])
+   ("p" "Priority" toodoo-transient-priority)]])
 
 ;===============================================================================
 ;;; Toodoo Keymap setup
@@ -147,6 +166,7 @@
   (define-key toodoo-mode-keymap (kbd "t") 'toodoo-transient-todos)
   (define-key toodoo-mode-keymap (kbd "m") 'toodoo-transient-move)
   (define-key toodoo-mode-keymap (kbd "v") 'toodoo-transient-views)
+  (define-key toodoo-mode-keymap (kbd "p") 'toodoo-transient-priority)
 )
 
 ; This is needed to ensure that these keys take precedence over all other minor mode keybindings
@@ -159,6 +179,7 @@
 (evil-make-overriding-map toodoo-mode-keymap 'normal)
 (add-hook 'toodoo-mode-hook #'evil-normalize-keymaps)
 
+
 ;===============================================================================
 ;;; Toodoo Minor Mode setup
 
@@ -166,9 +187,15 @@
 (define-minor-mode toodoo-mode
   "Simple Todo management built on Org."
   :lighter " toodoo"
-  :keymap toodoo-mode-keymap)
+  :keymap toodoo-mode-keymap
+  (toodoo--view-today)
+  ; highlight entries with priority [#A] considered as "high priority"
+  ; note: this highlighting does not clean-up if toodoo-mode is switched off
+  (font-lock-add-keywords nil
+    '(("^.*\\[#A\\].*$" . 'org-date-selected))))
 
 (provide 'toodoo-mode)
+
 
 ;===============================================================================
 ;;; Toodoo Startup functions
@@ -179,8 +206,7 @@
   (if (not (file-exists-p toodoo-main-file))
     (toodoo--create-list))
   (find-file toodoo-main-file)
-  (toodoo-mode 1)
-  (toodoo--view-today))
+  (toodoo-mode 1))
 
 (defun toodoo--create-list ()
   (with-temp-file toodoo-main-file
