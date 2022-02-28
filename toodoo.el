@@ -99,8 +99,24 @@
   (interactive)
   (org-priority (org-priority-to-value " ")))
 
+(defun toodoo--archive-everything ()
+  "Archive all DONE entries"
+  (interactive)
+  (save-restriction
+    (widen)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^** DONE " nil 1)
+        (org-archive-subtree)))))
+
 ;===============================================================================
 ;;; Operating Transient Menus
+
+(define-transient-command toodoo-transient-archive ()
+  "Toodoo Archive Transient"
+  ["Archive"
+   ("a" "Archive entry" org-archive-subtree)
+   ("e" "Everything - all DONE entries" toodoo--archive-everything)])
 
 (define-transient-command toodoo-transient-priority ()
   "Toodoo Priority Transient"
@@ -150,7 +166,8 @@
   [["List"
    ("t" "Manage (Add/Edit/Delete) todos" toodoo-transient-todos)
    ("m" "Move todos" toodoo-transient-move)
-   ("v" "View" toodoo-transient-views)]
+   ("v" "View" toodoo-transient-views)
+   ("a" "Archive" toodoo-transient-archive)]
    ["Entry"
    ("s" "State of todos" toodoo-transient-state)
    ("p" "Priority" toodoo-transient-priority)]])
@@ -167,6 +184,7 @@
   (define-key toodoo-mode-keymap (kbd "m") 'toodoo-transient-move)
   (define-key toodoo-mode-keymap (kbd "v") 'toodoo-transient-views)
   (define-key toodoo-mode-keymap (kbd "p") 'toodoo-transient-priority)
+  (define-key toodoo-mode-keymap (kbd "a") 'toodoo-transient-archive)
 )
 
 ; This is needed to ensure that these keys take precedence over all other minor mode keybindings
