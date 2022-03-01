@@ -33,6 +33,7 @@
   (interactive)
   (clone-indirect-buffer "*toodoo edit entry*" 1)
   (org-narrow-to-subtree)
+  (outline-show-subtree)
   (toodoo-mode -1)
   (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window))
 
@@ -207,11 +208,18 @@
   "Simple Todo management built on Org."
   :lighter " toodoo"
   :keymap toodoo-mode-keymap
-  (toodoo--view-today)
-  ; highlight entries with priority [#A] considered as "high priority"
-  ; note: this highlighting does not clean-up if toodoo-mode is switched off
-  (font-lock-add-keywords nil
-    '(("^.*\\[#A\\].*$" . 'org-date-selected))))
+  (if toodoo-mode
+      ; commands to run on start up
+      (progn
+        (toodoo--view-today)
+        ; highlight entries with priority [#A] considered as "high priority"
+        (font-lock-add-keywords nil
+                                '(("^.*\\[#A\\].*$" . 'org-date-selected))))
+    ; commands to run on shutdown
+    (progn
+      ; remove highlight
+      (font-lock-remove-keywords nil
+                                 '(("^.*\\[#A\\].*$" . 'org-date-selected))))))
 
 (provide 'toodoo-mode)
 
