@@ -1,4 +1,4 @@
-(defvar toodoo-main-file "~/orgmode/todo_test.org")
+(defvar toodoo-main-file "~/orgmode/todo.org")
 
 ;===============================================================================
 ;;; Core functions
@@ -13,7 +13,8 @@
 
 (defun toodoo--todo-set-state-done ()
   (interactive)
-  (org-todo "DONE"))
+  (org-todo "DONE")
+  (org-cycle))
 
 (defun toodoo--todo-set-state-clear ()
   (interactive)
