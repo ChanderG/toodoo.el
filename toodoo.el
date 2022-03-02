@@ -1,7 +1,28 @@
+;;; toodoo.el --- Magical interface to manage Todos on Org
+
+;; Copyright (c) 2022 Chander Govindarajan <mail@chandergovind.org>
+
+;; Author: Chander Govindarajan <mail@chandergovind.org>
+;; Version: 0.1
+;; Package-Requires: ((emacs "27.2") (transient "0.3.7") (evil "1.14.0"))
+;; Keywords: calendar, convenience
+;; URL: https://github.com/ChanderG/toodoo.el
+
+
+;;; Commentary:
+
+;; Provides a minor mode for fast and easy management of Todos using Org-mode and transients.
+
+;;; Code:
+
 (defvar toodoo-main-file "~/orgmode/todo.org")
 
 ;===============================================================================
 ;;; Core functions
+
+(require 'org)
+(require 'transient)
+(require 'evil)
 
 (defun toodoo--todo-set-state-started ()
   (interactive)
@@ -186,8 +207,7 @@
   (define-key toodoo-mode-keymap (kbd "m") 'toodoo-transient-move)
   (define-key toodoo-mode-keymap (kbd "v") 'toodoo-transient-views)
   (define-key toodoo-mode-keymap (kbd "p") 'toodoo-transient-priority)
-  (define-key toodoo-mode-keymap (kbd "a") 'toodoo-transient-archive)
-)
+  (define-key toodoo-mode-keymap (kbd "a") 'toodoo-transient-archive))
 
 ; This is needed to ensure that these keys take precedence over all other minor mode keybindings
 ; This is useful if not using evil-mode
@@ -245,3 +265,7 @@
     (insert "* Today\n")
     (insert "* This Week\n")
     (insert "* Later\n")))
+
+(provide 'toodoo)
+
+;;; toodoo.el ends here
