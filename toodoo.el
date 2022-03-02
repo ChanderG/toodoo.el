@@ -25,24 +25,29 @@
 (require 'evil)
 
 (defun toodoo--todo-set-state-started ()
+  "Set current entry to STARTED."
   (interactive)
   (org-todo "STARTED"))
 
 (defun toodoo--todo-set-state-blocked ()
+  "Set current entry to BLOCKED."
   (interactive)
   (org-todo "BLOCKED"))
 
 (defun toodoo--todo-set-state-done ()
+  "Set current entry to DONE."
   (interactive)
   (org-todo "DONE")
   (org-cycle))
 
 (defun toodoo--todo-set-state-clear ()
+  "Clear current entry to current state."
   (interactive)
   (org-todo ""))
 
 (defun toodoo--manage-add (title)
-  "Create a new Todo"
+  "Create a new Todo.
+Argument TITLE - the title of the task"
   (interactive "sTitle: ")
   (org-insert-heading-after-current)
   (insert title)
@@ -50,7 +55,7 @@
     (org-demote)))
 
 (defun toodoo--manage-edit ()
-  "Edit a Todo"
+  "Edit a Todo."
   (interactive)
   (clone-indirect-buffer "*toodoo edit entry*" 1)
   (org-narrow-to-subtree)
@@ -59,7 +64,7 @@
   (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window))
 
 (defun toodoo--manage-edit-title ()
-  "Edit a Todo"
+  "Edit a Todo."
   (interactive)
   (org-edit-headline (read-string "Title: " (org-get-heading 1 1 1 1))))
 
@@ -89,7 +94,7 @@
   (org-refile))
 
 (defun toodoo--view-section (section)
-  "View a single section by Name."
+  "View a single SECTION by Name."
   (interactive)
   (widen)
   (goto-char (point-min))
@@ -98,32 +103,32 @@
   (outline-show-children))
 
 (defun toodoo--view-today ()
-  "View single section: Today"
+  "View single section: Today."
   (interactive)
   (toodoo--view-section "Today"))
 
 (defun toodoo--view-week ()
-  "View single section: this Week"
+  "View single section: this Week."
   (interactive)
   (toodoo--view-section "This Week"))
 
 (defun toodoo--view-later ()
-  "View single section: Later"
+  "View single section: Later."
   (interactive)
   (toodoo--view-section "Later"))
 
 (defun toodoo--todo-set-prio-high ()
-  "Set task to high priority"
+  "Set task to high priority."
   (interactive)
   (org-priority (org-priority-to-value "A")))
 
 (defun toodoo--todo-set-prio-low ()
-  "Set task to low priority"
+  "Set task to low priority."
   (interactive)
   (org-priority (org-priority-to-value " ")))
 
 (defun toodoo--archive-everything ()
-  "Archive all DONE entries"
+  "Archive all DONE entries."
   (interactive)
   (save-restriction
     (widen)
@@ -256,6 +261,7 @@
   (toodoo-mode 1))
 
 (defun toodoo--create-list ()
+  "Create the todo file, is used only for the initial setup."
   (with-temp-file toodoo-main-file
     ; setup the TODO color schemes using local variable
     (insert "# -*- org-todo-keyword-faces: ((\"BLOCKED\" . \"red\") (\"STARTED\" . (:foreground \"orange\" :underline t)) (\"DONE\" . \"darkgreen\")); -*-\n")
