@@ -88,6 +88,7 @@ Argument TITLE - the title of the task"
 (defun toodoo--manage-kill ()
   "Kill a todo."
   (interactive)
+  (outline-hide-body)
   (kill-whole-line))
 
 (defun toodoo--todo-move-today ()
