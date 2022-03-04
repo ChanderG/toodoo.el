@@ -54,6 +54,21 @@ Argument TITLE - the title of the task"
   (if (= 1 (org-current-level))
     (org-demote)))
 
+;; Very hacky solution
+;; The alternative (better) solution is to close the tree in the edit view
+;; (since this function is called in that buffer's context.
+;; But this does not work cleanly - leaving some text showing between the headlines due to the shared buffer.
+(defun toodoo--close-edit-window-hook ()
+  "Clean-up to be done on close of edit window."
+  ; Find the main todo list buffer
+  (with-current-buffer (find-file toodoo-main-file)
+    ; go to the top of the file - the section marker
+    (goto-char (point-min))
+    ; force close the section
+    (outline-hide-body)
+    ; open it again
+    (outline-show-children)))
+
 (defun toodoo--manage-edit ()
   "Edit a Todo."
   (interactive)
@@ -61,7 +76,9 @@ Argument TITLE - the title of the task"
   (org-narrow-to-subtree)
   (outline-show-subtree)
   (toodoo-mode -1)
-  (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window))
+  (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window)
+  ;; Hack to reset the main window after edits are done
+  (add-hook 'kill-buffer-hook 'toodoo--close-edit-window-hook 0 1))
 
 (defun toodoo--manage-edit-title ()
   "Edit a Todo."
