@@ -45,14 +45,21 @@
   (interactive)
   (org-todo ""))
 
+; This function is a bit hacky in that we open up the entire file before adding things.
+; The reason is that if this is not done, we end up with spurious empty lines at the end of the section.
 (defun toodoo--manage-add (title)
   "Create a new Todo.
 Argument TITLE - the title of the task"
   (interactive "sTitle: ")
+  (widen) ; open up full file before adding stuff
   (org-insert-heading-after-current)
   (insert title)
   (if (= 1 (org-current-level))
-    (org-demote)))
+     (org-demote))
+  ; close back to the section - without losing point on current task
+  (save-excursion
+    (org-up-element)
+    (org-narrow-to-subtree)))
 
 ;; Very hacky solution
 ;; The alternative (better) solution is to close the tree in the edit view
@@ -89,7 +96,17 @@ Argument TITLE - the title of the task"
   "Kill a todo."
   (interactive)
   (outline-hide-body)
-  (kill-whole-line))
+  (kill-whole-line)
+  (if (= (point) (point-max))
+      (progn
+        (widen)
+        (kill-whole-line)
+        (previous-line)
+        ; close back to the section - without losing point on current task
+        (save-excursion
+          (org-up-element)
+          (org-narrow-to-subtree))
+        )))
 
 (defun toodoo--todo-move-today ()
   "Move a Todo to Today's context."
