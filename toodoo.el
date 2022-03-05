@@ -97,6 +97,7 @@ Argument TITLE - the title of the task"
   (interactive)
   (outline-hide-body)
   (kill-whole-line)
+  ;; to avoid issues with empty lines at end of view
   (if (= (point) (point-max))
       (progn
         (widen)
@@ -108,20 +109,39 @@ Argument TITLE - the title of the task"
           (org-narrow-to-subtree))
         )))
 
+(defun toodoo--get-section-heading ()
+  "Get name of the current section."
+  (interactive)
+  (save-excursion
+    (org-up-element)
+    (substring-no-properties (org-get-heading 1 1 1 1))))
+
+; This function is designed to move tasks between sections.
+; However, it is more complicated than it should be to avoid spurious empty lines added
+; between tasks. The ideas is to widen the file before attempting any refiles and finally
+; reset the section view to what you started with.
+(defun toodoo--todo-move-section (section)
+  (interactive)
+  (save-excursion
+    (widen) ; first widen before moving
+    (let ((home (toodoo--get-section-heading)))
+      (org-refile nil nil (list section buffer-file-name nil (org-find-exact-headline-in-buffer section)))
+      (toodoo--view-section home))))
+
 (defun toodoo--todo-move-today ()
   "Move a Todo to Today's context."
   (interactive)
-  (org-refile nil nil (list "Today" buffer-file-name nil (org-find-exact-headline-in-buffer "Today"))))
+  (toodoo--todo-move-section "Today"))
 
 (defun toodoo--todo-move-week ()
   "Move a Todo to this week's context."
   (interactive)
-  (org-refile nil nil (list "This Week" buffer-file-name nil (org-find-exact-headline-in-buffer "This Week"))))
+  (toodoo--todo-move-section "This Week"))
 
 (defun toodoo--todo-move-later ()
   "Move a Todo to later's context."
   (interactive)
-  (org-refile nil nil (list "Later" buffer-file-name nil (org-find-exact-headline-in-buffer "Later"))))
+  (toodoo--todo-move-section "Later"))
 
 (defun toodoo--todo-move-menu ()
   "Move a Todo to context using Menu."
