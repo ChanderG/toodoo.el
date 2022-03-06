@@ -104,3 +104,7 @@ Archive Operations:
 ## Acknowledgements
 
 - How to make an Emacs Minor Mode: https://nullprogram.com/blog/2013/02/06/
+
+## License
+
+Under Apache License 2.0.
