@@ -39,7 +39,7 @@ For now, clone this repo and load:
 
 ## Configuration
 
-You need to decide the file to use to store the todos. If nothing is specified, the default `/orgmode/todo.org` is used.
+You need to decide the file to use to store the todos. If nothing is specified, the default `~/orgmode/todo.org` is used.
 ```
 (setq toodoo-main-file "~/orgmode/tasks.org")
 ```
