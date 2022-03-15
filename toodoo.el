@@ -3,8 +3,8 @@
 ;; Copyright (c) 2022 Chander Govindarajan <mail@chandergovind.org>
 
 ;; Author: Chander Govindarajan <mail@chandergovind.org>
-;; Version: 0.1
-;; Package-Requires: ((emacs "27.2") (transient "0.3.7") (evil "1.14.0"))
+;; Version: 0.2
+;; Package-Requires: ((emacs "27.2") (transient "0.3.7"))
 ;; Keywords: calendar, convenience
 ;; URL: https://github.com/ChanderG/toodoo.el
 
@@ -15,14 +15,18 @@
 
 ;;; Code:
 
+;; File used to track tasks
 (defvar toodoo-main-file "~/orgmode/todo.org")
+;; Whether to base on evil. Set to 't' by default. Setting to nil, will make toodoo work with plain emacs.
+(defvar toodoo-evil-base t)
 
 ;===============================================================================
 ;;; Core functions
 
 (require 'org)
 (require 'transient)
-(require 'evil)
+(if toodoo-evil-base
+    (require 'evil))
 
 (defun toodoo--todo-set-state-started ()
   "Set current entry to STARTED."
@@ -83,7 +87,13 @@ Argument TITLE - the title of the task"
   (org-narrow-to-subtree)
   (outline-show-subtree)
   (toodoo-mode -1)
-  (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window)
+  ;; provide a fast way to quit the edit buffer
+  ;; in both cases - the keybinding is left in the global org-mode
+  ;; either create a minor mode for this, or
+  ;; hackliy remove these keybindings from the hook function
+  (if toodoo-evil-base
+    (define-key evil-normal-state-map (kbd "q") 'kill-buffer-and-window)
+    (local-set-key (kbd "C-c q") 'kill-buffer-and-window))
   ;; Hack to reset the main window after edits are done
   (add-hook 'kill-buffer-hook 'toodoo--close-edit-window-hook 0 1))
 
@@ -276,9 +286,10 @@ Argument TITLE - the title of the task"
 ; This is needed to make evil respect our keymap
 ; we need our keys to override evil's
 ; obtained from: https://github.com/emacs-evil/evil/issues/511#issuecomment-273754917
-(evil-make-overriding-map toodoo-mode-keymap 'normal)
-(add-hook 'toodoo-mode-hook #'evil-normalize-keymaps)
-
+(if toodoo-evil-base
+  (progn
+    (evil-make-overriding-map toodoo-mode-keymap 'normal)
+    (add-hook 'toodoo-mode-hook #'evil-normalize-keymaps)))
 
 ;===============================================================================
 ;;; Toodoo Minor Mode setup

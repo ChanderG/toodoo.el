@@ -1,7 +1,6 @@
 # toodoo
 
 Magit like interface for a simple Todo workflow built on top of Org.
-(Assumes use of Evil Mode - a restriction that should be easy enough to relax.)
 
 ![toodoo in action](demo.gif)
 
@@ -45,11 +44,18 @@ You need to decide the file to use to store the todos. If nothing is specified, 
 ```
 Note: this folder should exist, but the file should not since `toodoo` creates it with a template.
 
+By default, `toodoo` assumes that you use `evil-mode` (just because of my own preference).
+But, this is easy enough to disable:
+```
+(setq toodoo-evil-base nil)
+```
+Now, `toodoo` will work with plain Emacs.
+
 Next, you should bind a key to open the `toodoo` list quickly from anywhere. This is what I use:
 ```
 (define-key evil-normal-state-map (kbd ";t") 'toodoo-open-list)
 ```
-Now, I can just hit `;t` and open the `toodoo` list.
+Now, I can just hit `;t` and open the `toodoo` list. You can bind `toodoo-open-list` to any keybinding of your choice (non-evil) or just call it directly.
 
 ## Usage
 
@@ -63,9 +69,9 @@ In general though, you will probably use the below commands directly.
 
 List Main Operations:
 + `t a` - Add a new todo in the current section (below the current task). Prompts for a title in the minibuffer.
-+ `t e` - Edit a todo. Opens a new window, dropping you in plain Orgmode. You can add a description, or any Org feature really - subheadings, tags, clocking etc.
++ `t e` - Edit a todo. Opens a new window, dropping you in plain Orgmode. You can add a description, or any Org feature really - subheadings, tags, clocking etc. When you are done editing a task, use `q` (evil mode, the default) or `C-c q` (plain emacs) to quit cleanly.
 + `t t` - Quickly edit the title alone from the minibuffer.
-+ `t k` - Kill a todo. Note: this is permanent, there is no way to get back killed todos.
++ `t k` - Kill a todo. Note: this is permanent, there is no way to get back killed todos. You should use the Archive option `a` below for normal task lifecycle. This is to remove entries that you do not want to work on.
 
 View Operations:
 + `v t` - View Today category. The default. You are expected to spend most of your time here.
@@ -77,6 +83,7 @@ Move Operations:
 + `m t` - Move the current task to Today.
 + `m w` - Move the current task to This Week.
 + `m l` - Move the current task to Later.
+
 (All of these operations don't disturb your current view.)
 
 State Operations:
@@ -84,11 +91,13 @@ State Operations:
 + `s b` - Mark the current task as Blocked.
 + `s d` - Mark the current task as Done.
 + `s c` - Clear the state.
+
 By default, all entries are assumed to be Todo, so no special marker is used for this.
 
 Priority Operations:
 + `p p` - Mark current task as High Priority. Task is highlighted.
 + `p r` - Reset the priority.
+
 We only have support for 2 priorities of tasks - high and low.
 
 Archive Operations:
