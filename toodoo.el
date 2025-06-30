@@ -15,6 +15,8 @@
 
 ;;; Code:
 
+(require 'transient)
+
 ;; File used to track tasks
 (defvar toodoo-main-file "~/orgmode/todo.org")
 ;; Whether to base on evil. Set to 't' by default. Setting to nil, will make toodoo work with plain emacs.
@@ -205,19 +207,19 @@ Argument TITLE - the title of the task"
 ;===============================================================================
 ;;; Operating Transient Menus
 
-(define-transient-command toodoo-transient-archive ()
+(transient-define-prefix toodoo-transient-archive ()
   "Toodoo Archive Transient"
   ["Archive"
    ("a" "Archive entry" org-archive-subtree)
    ("e" "Everything - all DONE entries" toodoo--archive-everything)])
 
-(define-transient-command toodoo-transient-priority ()
+(transient-define-prefix toodoo-transient-priority ()
   "Toodoo Priority Transient"
   ["Manage Priority"
    ("p" "High priority" toodoo--todo-set-prio-high)
    ("r" "Remove priority" toodoo--todo-set-prio-low)])
 
-(define-transient-command toodoo-transient-views ()
+(transient-define-prefix toodoo-transient-views ()
   "Toodoo Views Transient"
   [["Section"
     ("t" "Today" toodoo--view-today)
@@ -228,7 +230,7 @@ Argument TITLE - the title of the task"
    ["All"
     ("a" "All" widen)]])
 
-(define-transient-command toodoo-transient-move ()
+(transient-define-prefix toodoo-transient-move ()
   "Toodoo Move Transient"
   ["Move to Schedule"
    ("t" "Today" toodoo--todo-move-today)
@@ -236,7 +238,7 @@ Argument TITLE - the title of the task"
    ("l" "Later" toodoo--todo-move-later)
    ("m" "Chose from Menu" toodoo--todo-move-menu)])
 
-(define-transient-command toodoo-transient-state ()
+(transient-define-prefix toodoo-transient-state ()
   "Toodoo State Transient"
   ["State management"
    ("s" "Started" toodoo--todo-set-state-started)
@@ -245,7 +247,7 @@ Argument TITLE - the title of the task"
    ("c" "Clear" toodoo--todo-set-state-clear)
    ])
 
-(define-transient-command toodoo-transient-todos ()
+(transient-define-prefix toodoo-transient-todos ()
   "Toodoo Add/Edit/Delete Transient"
   [["Basic"
    ("a" "Add" toodoo--manage-add)
@@ -254,7 +256,7 @@ Argument TITLE - the title of the task"
   ["Advanced"
    ("t" "edit Title alone" toodoo--manage-edit-title)]])
 
-(define-transient-command toodoo-transient-main ()
+(transient-define-prefix toodoo-transient-main ()
   "Toodoo Main Transient"
   [["List"
    ("t" "Manage (Add/Edit/Delete) todos" toodoo-transient-todos)
