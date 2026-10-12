@@ -225,8 +225,6 @@ Argument TITLE - the title of the task"
     ("t" "Today" toodoo--view-today)
     ("w" "this Week" toodoo--view-week)
     ("l" "Later" toodoo--view-later)]
-   ["Combined"
-    ()]
    ["All"
     ("a" "All" widen)]])
 
